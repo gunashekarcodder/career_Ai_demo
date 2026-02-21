@@ -1,0 +1,1454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CareerAI — Full App Design Script</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Mono:wght@300;400;500&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,600;1,9..144,300&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink: #0A0B14;
+  --ink2: #111222;
+  --ink3: #1A1C30;
+  --panel: #161828;
+  --border: #252840;
+  --teal: #00E5C8;
+  --teal-dim: #00B89F;
+  --gold: #FFD166;
+  --rose: #FF6B9D;
+  --violet: #8B5CF6;
+  --text: #E8EAF6;
+  --muted: #7B7FA8;
+  --success: #22D3A7;
+  --warning: #FFB547;
+  --error: #FF6B6B;
+  --glow: 0 0 30px rgba(0,229,200,0.15);
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  background: var(--ink);
+  color: var(--text);
+  font-family: 'DM Mono', monospace;
+  font-size: 14px;
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+/* ── NAV ── */
+.design-nav {
+  position: sticky; top:0; z-index:100;
+  background: rgba(10,11,20,0.95);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+  padding: 0 48px;
+  display: flex; align-items:center; justify-content:space-between;
+  height: 64px;
+}
+.nav-logo { font-family:'Syne',sans-serif; font-size:18px; font-weight:800; color:var(--teal); letter-spacing:-0.5px; }
+.nav-logo span { color: var(--text); }
+.nav-links { display:flex; gap:6px; flex-wrap:wrap; }
+.nav-links a {
+  color: var(--muted); font-size:11px; text-decoration:none;
+  padding: 5px 12px; border-radius:20px;
+  border: 1px solid transparent;
+  transition: all .2s;
+}
+.nav-links a:hover { color:var(--teal); border-color:var(--teal); }
+
+/* ── HERO ── */
+.hero {
+  min-height: 100vh;
+  display: flex; align-items:center; justify-content:center;
+  position: relative; overflow:hidden;
+  padding: 80px 48px;
+  text-align: center;
+}
+.hero-bg {
+  position:absolute; inset:0;
+  background:
+    radial-gradient(ellipse 80% 60% at 50% -20%, rgba(0,229,200,0.08) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 40% at 80% 80%, rgba(139,92,246,0.06) 0%, transparent 50%),
+    radial-gradient(ellipse 40% 30% at 10% 70%, rgba(255,107,157,0.04) 0%, transparent 40%);
+}
+.hero-grid {
+  position:absolute; inset:0;
+  background-image:
+    linear-gradient(rgba(37,40,64,0.4) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(37,40,64,0.4) 1px, transparent 1px);
+  background-size: 60px 60px;
+  mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 0%, transparent 100%);
+}
+.hero-content { position:relative; z-index:2; max-width:900px; }
+.hero-badge {
+  display:inline-flex; align-items:center; gap:8px;
+  padding: 6px 16px; border-radius:20px;
+  border: 1px solid rgba(0,229,200,0.3);
+  background: rgba(0,229,200,0.05);
+  font-size:11px; color:var(--teal); letter-spacing:2px; text-transform:uppercase;
+  margin-bottom: 32px;
+}
+.hero-badge::before {
+  content:''; width:6px; height:6px; border-radius:50%;
+  background:var(--teal); animation: pulse 2s infinite;
+}
+@keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.5;transform:scale(0.8)} }
+
+h1.hero-title {
+  font-family:'Syne',sans-serif; font-size:clamp(48px,7vw,96px);
+  font-weight:800; line-height:0.95; letter-spacing:-3px;
+  color: var(--text);
+  margin-bottom: 8px;
+}
+h1.hero-title span { color: var(--teal); }
+.hero-sub {
+  font-family:'Fraunces',serif; font-style:italic; font-weight:300;
+  font-size:clamp(18px,2.5vw,28px); color:var(--muted); margin-bottom:16px;
+}
+.hero-desc { font-size:14px; color:var(--muted); max-width:600px; margin:0 auto 48px; line-height:1.8; }
+
+.hero-stats {
+  display:flex; justify-content:center; gap:48px; margin-top:64px;
+  border-top: 1px solid var(--border); padding-top:48px;
+}
+.stat-item { text-align:left; }
+.stat-num { font-family:'Syne',sans-serif; font-size:32px; font-weight:800; color:var(--teal); display:block; }
+.stat-lbl { font-size:11px; color:var(--muted); text-transform:uppercase; letter-spacing:1px; }
+
+/* ── SECTIONS ── */
+.section {
+  padding: 100px 48px;
+  max-width: 1400px; margin:0 auto;
+}
+.section-header { margin-bottom:64px; }
+.section-tag {
+  display:inline-block; font-size:10px; letter-spacing:3px; text-transform:uppercase;
+  color:var(--teal); padding:4px 12px; border:1px solid rgba(0,229,200,0.3);
+  border-radius:20px; margin-bottom:16px;
+}
+.section-title {
+  font-family:'Syne',sans-serif; font-size:clamp(28px,4vw,48px);
+  font-weight:700; letter-spacing:-1px; line-height:1.1;
+}
+.section-title span { color:var(--teal); }
+.section-desc { font-size:14px; color:var(--muted); max-width:500px; line-height:1.8; margin-top:16px; }
+
+/* ── FULL-WIDTH SECTION ── */
+.section-full { padding:100px 48px; }
+.section-full .section-header { max-width:1400px; margin:0 auto 64px; }
+
+/* ── SCREEN CARD ── */
+.screen-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(380px,1fr)); gap:32px; }
+
+.screen-card {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 20px; overflow:hidden;
+  transition: all .3s; position:relative;
+}
+.screen-card:hover {
+  border-color: rgba(0,229,200,0.4);
+  transform: translateY(-4px);
+  box-shadow: var(--glow), 0 24px 48px rgba(0,0,0,0.4);
+}
+.screen-label {
+  position:absolute; top:16px; right:16px;
+  background: rgba(0,229,200,0.1); color:var(--teal);
+  font-size:10px; letter-spacing:2px; text-transform:uppercase;
+  padding:4px 10px; border-radius:10px; border:1px solid rgba(0,229,200,0.2);
+  z-index:5;
+}
+.screen-mockup {
+  width:100%; aspect-ratio:9/16; max-height:500px;
+  position:relative; overflow:hidden;
+  background: var(--ink2);
+}
+.screen-info { padding:24px; }
+.screen-name { font-family:'Syne',sans-serif; font-size:16px; font-weight:700; margin-bottom:6px; }
+.screen-desc-text { font-size:12px; color:var(--muted); line-height:1.7; margin-bottom:16px; }
+.feature-tags { display:flex; flex-wrap:wrap; gap:6px; }
+.feat-tag {
+  font-size:10px; padding:3px 8px; border-radius:6px;
+  background: rgba(139,92,246,0.1); color: rgba(139,92,246,0.9);
+  border: 1px solid rgba(139,92,246,0.2);
+}
+
+/* ── PHONE MOCKUP ── */
+.phone-frame {
+  width:100%; height:100%;
+  background: var(--ink2);
+  font-size:12px;
+  padding:16px;
+  overflow:hidden;
+}
+.phone-status {
+  display:flex; justify-content:space-between; align-items:center;
+  font-size:10px; color:var(--muted); margin-bottom:12px;
+}
+.phone-content { height:calc(100% - 30px); overflow:hidden; }
+
+/* ── AUTH SCREENS ── */
+.auth-frame {
+  background: linear-gradient(160deg, #0F1022 0%, #0A0B14 100%);
+  height:100%; padding:20px 16px; position:relative; overflow:hidden;
+}
+.auth-glow {
+  position:absolute; top:-30px; left:50%; transform:translateX(-50%);
+  width:200px; height:200px; border-radius:50%;
+  background: radial-gradient(circle, rgba(0,229,200,0.12) 0%, transparent 70%);
+  pointer-events:none;
+}
+.auth-logo-sm { font-family:'Syne',sans-serif; font-size:13px; font-weight:800; color:var(--teal); margin-bottom:24px; text-align:center; }
+.auth-title-sm { font-family:'Syne',sans-serif; font-size:18px; font-weight:700; margin-bottom:4px; color:var(--text); }
+.auth-sub-sm { font-size:10px; color:var(--muted); margin-bottom:20px; }
+.input-group-sm { margin-bottom:10px; }
+.input-label-sm { font-size:9px; color:var(--muted); letter-spacing:1px; text-transform:uppercase; margin-bottom:4px; }
+.input-field-sm {
+  width:100%; background:rgba(37,40,64,0.6); border:1px solid var(--border);
+  border-radius:8px; padding:8px 10px; color:var(--text); font-size:11px;
+  font-family:'DM Mono',monospace;
+}
+.input-field-sm.focused { border-color:var(--teal); box-shadow: 0 0 0 2px rgba(0,229,200,0.1); }
+.btn-primary-sm {
+  width:100%; background: linear-gradient(135deg, var(--teal), var(--teal-dim));
+  color: var(--ink); border:none; border-radius:8px; padding:10px;
+  font-family:'Syne',sans-serif; font-size:12px; font-weight:700; cursor:pointer;
+  margin-top:12px; text-align:center;
+}
+.btn-google-sm {
+  width:100%; background:rgba(255,255,255,0.05); color:var(--text);
+  border:1px solid var(--border); border-radius:8px; padding:9px;
+  font-size:11px; cursor:pointer; margin-top:8px; text-align:center;
+  display:flex; align-items:center; justify-content:center; gap:8px;
+}
+.google-icon { width:12px; height:12px; }
+.divider-sm { display:flex; align-items:center; gap:8px; margin:12px 0; }
+.divider-sm::before, .divider-sm::after { content:''; flex:1; height:1px; background:var(--border); }
+.divider-sm-text { font-size:9px; color:var(--muted); }
+.auth-link-sm { font-size:10px; color:var(--teal); text-align:center; margin-top:12px; cursor:pointer; }
+.social-row { display:flex; gap:8px; margin-top:8px; }
+.social-btn-sm { flex:1; background:rgba(255,255,255,0.04); border:1px solid var(--border); border-radius:8px; padding:8px; text-align:center; font-size:10px; color:var(--muted); }
+.terms-sm { font-size:9px; color:var(--muted); text-align:center; margin-top:12px; line-height:1.5; }
+.terms-sm span { color:var(--teal); }
+
+/* ONBOARDING */
+.onboard-frame { background:var(--ink2); height:100%; padding:20px 16px; }
+.step-dots { display:flex; gap:4px; justify-content:center; margin-bottom:24px; }
+.dot { width:20px; height:3px; border-radius:2px; background:var(--border); }
+.dot.active { background:var(--teal); width:32px; }
+.onboard-icon { width:56px; height:56px; border-radius:16px; background:rgba(0,229,200,0.1); border:1px solid rgba(0,229,200,0.2); display:flex; align-items:center; justify-content:center; font-size:24px; margin:0 auto 16px; }
+.onboard-title { font-family:'Syne',sans-serif; font-size:16px; font-weight:700; text-align:center; margin-bottom:8px; }
+.onboard-desc { font-size:11px; color:var(--muted); text-align:center; line-height:1.6; margin-bottom:24px; }
+.choice-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:16px; }
+.choice-btn { background:rgba(37,40,64,0.6); border:1px solid var(--border); border-radius:10px; padding:12px 8px; text-align:center; cursor:pointer; transition:.2s; }
+.choice-btn.selected { border-color:var(--teal); background:rgba(0,229,200,0.08); }
+.choice-btn .c-icon { font-size:20px; margin-bottom:4px; }
+.choice-btn .c-label { font-size:10px; color:var(--muted); }
+.choice-btn.selected .c-label { color:var(--teal); }
+
+/* DASHBOARD */
+.dash-frame { background:var(--ink); height:100%; overflow:hidden; }
+.dash-header { background:var(--panel); border-bottom:1px solid var(--border); padding:12px 16px; display:flex; align-items:center; justify-content:space-between; }
+.dash-avatar { width:28px; height:28px; border-radius:50%; background:linear-gradient(135deg,var(--teal),var(--violet)); }
+.dash-greeting { font-family:'Syne',sans-serif; font-size:11px; font-weight:700; }
+.dash-greeting span { color:var(--teal); }
+.notif-dot { width:8px; height:8px; border-radius:50%; background:var(--rose); }
+
+.dash-body { padding:12px 16px; overflow-y:auto; height:calc(100% - 52px - 52px); }
+.career-score-card {
+  background:linear-gradient(135deg, rgba(0,229,200,0.12), rgba(139,92,246,0.08));
+  border:1px solid rgba(0,229,200,0.2); border-radius:16px; padding:16px; margin-bottom:12px;
+}
+.score-label { font-size:9px; text-transform:uppercase; letter-spacing:1px; color:var(--muted); margin-bottom:4px; }
+.score-value { font-family:'Syne',sans-serif; font-size:36px; font-weight:800; color:var(--teal); line-height:1; }
+.score-sub { font-size:10px; color:var(--muted); margin-top:4px; }
+.score-bar-track { height:4px; background:rgba(255,255,255,0.08); border-radius:2px; margin-top:10px; }
+.score-bar-fill { height:100%; width:72%; background:linear-gradient(90deg,var(--teal),var(--violet)); border-radius:2px; }
+
+.section-sm-title { font-family:'Syne',sans-serif; font-size:11px; font-weight:700; margin:12px 0 8px; color:var(--muted); text-transform:uppercase; letter-spacing:1px; }
+.quick-actions { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:12px; }
+.qa-btn { background:var(--panel); border:1px solid var(--border); border-radius:10px; padding:10px 8px; display:flex; flex-direction:column; gap:4px; cursor:pointer; }
+.qa-icon { font-size:16px; }
+.qa-label { font-size:9px; color:var(--muted); }
+.qa-title-sm { font-size:10px; font-family:'Syne',sans-serif; font-weight:700; }
+
+.recommendation-row { display:flex; flex-direction:column; gap:8px; }
+.rec-card-sm { background:var(--panel); border:1px solid var(--border); border-radius:10px; padding:10px 12px; display:flex; align-items:center; gap:10px; }
+.rec-icon-sm { font-size:18px; width:32px; height:32px; display:flex; align-items:center; justify-content:center; background:rgba(0,229,200,0.08); border-radius:8px; flex-shrink:0; }
+.rec-info-sm .rec-title { font-size:11px; font-weight:600; font-family:'Syne',sans-serif; }
+.rec-info-sm .rec-meta { font-size:9px; color:var(--muted); }
+.rec-match { margin-left:auto; font-size:10px; color:var(--teal); font-weight:600; }
+
+.bottom-nav { background:var(--panel); border-top:1px solid var(--border); padding:8px 16px; display:flex; justify-content:space-around; }
+.bnav-item { display:flex; flex-direction:column; align-items:center; gap:2px; opacity:0.5; cursor:pointer; }
+.bnav-item.active { opacity:1; color:var(--teal); }
+.bnav-icon { font-size:18px; }
+.bnav-label { font-size:8px; text-transform:uppercase; letter-spacing:0.5px; }
+
+/* SKILL GAP */
+.skill-frame { background:var(--ink); height:100%; padding:16px; overflow:hidden; }
+.skill-header { display:flex; align-items:center; gap:10px; margin-bottom:16px; }
+.back-btn { width:28px; height:28px; border-radius:8px; background:var(--panel); border:1px solid var(--border); display:flex; align-items:center; justify-content:center; font-size:12px; cursor:pointer; }
+.skill-title-hdr { font-family:'Syne',sans-serif; font-size:14px; font-weight:700; }
+.radar-placeholder { width:100%; aspect-ratio:1; max-height:160px; background:var(--panel); border:1px solid var(--border); border-radius:16px; margin-bottom:16px; display:flex; align-items:center; justify-content:center; position:relative; overflow:hidden; }
+.radar-bg-circles { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; }
+.radar-bg-circles::before, .radar-bg-circles::after {
+  content:''; position:absolute; border-radius:50%; border:1px solid rgba(0,229,200,0.1);
+}
+.radar-bg-circles::before { width:80%; height:80%; }
+.radar-bg-circles::after { width:50%; height:50%; }
+.radar-label { font-size:10px; color:var(--muted); z-index:2; }
+.skill-bars { display:flex; flex-direction:column; gap:10px; }
+.skill-bar-item {}
+.skill-bar-top { display:flex; justify-content:space-between; margin-bottom:4px; }
+.skill-name-sm { font-size:10px; font-family:'Syne',sans-serif; font-weight:600; }
+.skill-pct { font-size:10px; color:var(--teal); }
+.skill-track { height:6px; background:rgba(255,255,255,0.05); border-radius:3px; }
+.skill-fill { height:100%; border-radius:3px; }
+.skill-fill.high { background:linear-gradient(90deg,var(--teal),var(--success)); }
+.skill-fill.mid { background:linear-gradient(90deg,var(--gold),var(--warning)); }
+.skill-fill.low { background:linear-gradient(90deg,var(--rose),var(--error)); }
+
+/* JOB BOARD */
+.job-frame { background:var(--ink); height:100%; padding:0; overflow:hidden; }
+.job-search { padding:12px 16px; background:var(--panel); border-bottom:1px solid var(--border); }
+.search-bar { background:var(--ink2); border:1px solid var(--border); border-radius:10px; padding:8px 12px; display:flex; align-items:center; gap:8px; }
+.search-bar .s-icon { font-size:14px; color:var(--muted); }
+.search-bar .s-text { font-size:11px; color:var(--muted); }
+.filter-row { display:flex; gap:6px; overflow-x:auto; padding:10px 16px; border-bottom:1px solid var(--border); }
+.filter-chip { flex-shrink:0; padding:4px 10px; border-radius:20px; border:1px solid var(--border); font-size:9px; color:var(--muted); cursor:pointer; white-space:nowrap; }
+.filter-chip.active { border-color:var(--teal); color:var(--teal); background:rgba(0,229,200,0.08); }
+.job-list { padding:12px 16px; overflow-y:auto; height:calc(100% - 90px - 52px); }
+.job-card-sm { background:var(--panel); border:1px solid var(--border); border-radius:12px; padding:12px; margin-bottom:8px; cursor:pointer; transition:.2s; }
+.job-card-sm:hover { border-color:rgba(0,229,200,0.3); }
+.job-card-top { display:flex; align-items:center; gap:10px; margin-bottom:8px; }
+.company-logo-sm { width:32px; height:32px; border-radius:8px; background:linear-gradient(135deg,rgba(0,229,200,0.2),rgba(139,92,246,0.2)); display:flex; align-items:center; justify-content:center; font-size:14px; flex-shrink:0; }
+.job-info-sm .job-title-sm { font-size:11px; font-family:'Syne',sans-serif; font-weight:700; }
+.job-info-sm .company-name-sm { font-size:10px; color:var(--muted); }
+.match-badge { margin-left:auto; background:rgba(0,229,200,0.1); color:var(--teal); border:1px solid rgba(0,229,200,0.2); font-size:9px; padding:2px 7px; border-radius:6px; flex-shrink:0; }
+.job-tags-sm { display:flex; gap:4px; flex-wrap:wrap; }
+.jtag { font-size:9px; padding:2px 6px; border-radius:4px; background:rgba(255,255,255,0.04); color:var(--muted); border:1px solid var(--border); }
+.salary-sm { font-size:10px; color:var(--gold); margin-top:6px; font-weight:600; }
+
+/* RESUME */
+.resume-frame { background:var(--ink); height:100%; padding:16px; overflow:hidden; }
+.resume-card { background:white; border-radius:12px; padding:14px; color:#111; height:calc(100% - 80px); overflow:hidden; position:relative; }
+.resume-hdr { display:flex; align-items:flex-start; gap:10px; margin-bottom:10px; border-bottom:2px solid #00E5C8; padding-bottom:8px; }
+.resume-avatar-sm { width:36px; height:36px; border-radius:8px; background:linear-gradient(135deg,#00E5C8,#8B5CF6); flex-shrink:0; }
+.resume-name-sm { font-family:'Syne',sans-serif; font-size:13px; font-weight:800; color:#0A0B14; }
+.resume-role-sm { font-size:9px; color:#666; }
+.resume-section-title { font-size:8px; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:#00B89F; margin:8px 0 4px; }
+.resume-item-sm { display:flex; align-items:flex-start; gap:4px; margin-bottom:3px; font-size:9px; color:#333; }
+.resume-item-sm::before { content:'▸'; color:#00E5C8; font-size:8px; flex-shrink:0; margin-top:1px; }
+.ai-score-overlay {
+  position:absolute; bottom:0; left:0; right:0;
+  background:linear-gradient(0deg, rgba(10,11,20,0.98) 0%, rgba(10,11,20,0.6) 100%);
+  padding:12px; border-radius:0 0 12px 12px;
+}
+.ai-score-row { display:flex; align-items:center; justify-content:space-between; }
+.ai-score-val { font-family:'Syne',sans-serif; font-size:22px; font-weight:800; color:var(--teal); }
+.ai-score-label { font-size:9px; color:var(--muted); }
+.ai-suggest { font-size:9px; color:var(--gold); margin-top:4px; }
+
+/* ROADMAP */
+.roadmap-frame { background:var(--ink); height:100%; padding:16px; overflow:hidden; }
+.roadmap-title { font-family:'Syne',sans-serif; font-size:14px; font-weight:700; margin-bottom:16px; }
+.roadmap-path { position:relative; padding-left:24px; }
+.roadmap-path::before { content:''; position:absolute; left:7px; top:0; bottom:0; width:2px; background:linear-gradient(180deg,var(--teal) 0%,var(--violet) 50%,rgba(255,255,255,0.1) 100%); border-radius:1px; }
+.road-step { position:relative; margin-bottom:14px; }
+.road-step::before { content:''; position:absolute; left:-21px; top:6px; width:10px; height:10px; border-radius:50%; background:var(--panel); border:2px solid var(--border); }
+.road-step.done::before { background:var(--teal); border-color:var(--teal); box-shadow:0 0 8px rgba(0,229,200,0.4); }
+.road-step.active::before { background:var(--violet); border-color:var(--violet); box-shadow:0 0 8px rgba(139,92,246,0.5); }
+.road-step-card { background:var(--panel); border:1px solid var(--border); border-radius:10px; padding:10px 12px; }
+.road-step.done .road-step-card { border-color:rgba(0,229,200,0.2); }
+.road-step.active .road-step-card { border-color:rgba(139,92,246,0.3); }
+.road-step-title { font-size:11px; font-family:'Syne',sans-serif; font-weight:700; margin-bottom:2px; }
+.road-step-sub { font-size:9px; color:var(--muted); }
+.road-step-badge { display:inline-block; margin-top:5px; font-size:8px; padding:2px 7px; border-radius:5px; }
+.badge-done { background:rgba(0,229,200,0.1); color:var(--teal); }
+.badge-active { background:rgba(139,92,246,0.1); color:var(--violet); }
+.badge-locked { background:rgba(255,255,255,0.05); color:var(--muted); }
+
+/* MENTOR */
+.mentor-frame { background:var(--ink); height:100%; padding:0; overflow:hidden; }
+.mentor-list { padding:12px 16px; overflow-y:auto; height:calc(100% - 52px); }
+.mentor-card-sm { background:var(--panel); border:1px solid var(--border); border-radius:12px; padding:12px; margin-bottom:10px; display:flex; gap:12px; align-items:flex-start; }
+.mentor-avatar-sm { width:40px; height:40px; border-radius:50%; flex-shrink:0; border:2px solid var(--teal); overflow:hidden; background:linear-gradient(135deg,rgba(0,229,200,0.3),rgba(139,92,246,0.3)); display:flex; align-items:center; justify-content:center; font-size:18px; }
+.mentor-name { font-size:11px; font-family:'Syne',sans-serif; font-weight:700; margin-bottom:2px; }
+.mentor-role-sm { font-size:9px; color:var(--muted); margin-bottom:6px; }
+.mentor-tags-sm { display:flex; gap:4px; flex-wrap:wrap; margin-bottom:6px; }
+.mentor-tag-sm { font-size:8px; padding:2px 6px; border-radius:4px; background:rgba(139,92,246,0.1); color:rgba(139,92,246,0.9); border:1px solid rgba(139,92,246,0.2); }
+.mentor-rating { font-size:10px; color:var(--gold); }
+.book-btn-sm { margin-left:auto; background:linear-gradient(135deg,var(--teal),var(--teal-dim)); color:var(--ink); font-size:9px; padding:5px 10px; border-radius:6px; border:none; font-family:'Syne',sans-serif; font-weight:700; cursor:pointer; flex-shrink:0; }
+
+/* ASSESSMENT */
+.assess-frame { background:var(--ink); height:100%; padding:16px; overflow:hidden; }
+.assess-progress { display:flex; align-items:center; gap:8px; margin-bottom:20px; }
+.assess-prog-bar { flex:1; height:4px; background:rgba(255,255,255,0.05); border-radius:2px; }
+.assess-prog-fill { height:100%; background:linear-gradient(90deg,var(--teal),var(--violet)); border-radius:2px; }
+.assess-q-num { font-size:9px; color:var(--muted); }
+.assess-question { font-family:'Syne',sans-serif; font-size:13px; font-weight:700; margin-bottom:8px; line-height:1.4; }
+.assess-context { font-size:10px; color:var(--muted); margin-bottom:20px; }
+.assess-options { display:flex; flex-direction:column; gap:8px; }
+.assess-option { background:var(--panel); border:1px solid var(--border); border-radius:10px; padding:10px 12px; font-size:11px; cursor:pointer; transition:.2s; }
+.assess-option:hover { border-color:var(--teal); }
+.assess-option.selected { border-color:var(--teal); background:rgba(0,229,200,0.08); color:var(--teal); }
+.assess-nav { display:flex; gap:8px; margin-top:16px; }
+.assess-nav .prev { flex:1; background:var(--panel); border:1px solid var(--border); border-radius:8px; padding:9px; font-size:10px; text-align:center; cursor:pointer; }
+.assess-nav .next { flex:2; background:linear-gradient(135deg,var(--teal),var(--teal-dim)); color:var(--ink); border:none; border-radius:8px; padding:9px; font-family:'Syne',sans-serif; font-size:10px; font-weight:700; cursor:pointer; text-align:center; }
+
+/* ANALYTICS */
+.analytics-frame { background:var(--ink); height:100%; padding:16px; overflow:hidden; }
+.chart-placeholder { background:var(--panel); border:1px solid var(--border); border-radius:12px; padding:14px; margin-bottom:10px; }
+.chart-title { font-size:10px; font-family:'Syne',sans-serif; font-weight:700; margin-bottom:10px; }
+.mini-chart { display:flex; align-items:flex-end; gap:4px; height:60px; }
+.mini-bar { flex:1; border-radius:3px 3px 0 0; background:rgba(0,229,200,0.3); position:relative; }
+.mini-bar.highlight { background:linear-gradient(0deg,var(--teal),var(--violet)); }
+.insight-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+.insight-card { background:var(--panel); border:1px solid var(--border); border-radius:10px; padding:10px; }
+.insight-val { font-family:'Syne',sans-serif; font-size:20px; font-weight:800; }
+.insight-val.teal { color:var(--teal); }
+.insight-val.gold { color:var(--gold); }
+.insight-val.rose { color:var(--rose); }
+.insight-lbl-sm { font-size:8px; color:var(--muted); text-transform:uppercase; letter-spacing:0.5px; }
+
+/* ── SPECS TABLE ── */
+.spec-section { background: var(--panel); border:1px solid var(--border); border-radius:20px; padding:40px; margin-bottom:32px; }
+.spec-section h3 { font-family:'Syne',sans-serif; font-size:20px; font-weight:700; margin-bottom:24px; }
+.spec-section h3 span { color:var(--teal); }
+
+.spec-table { width:100%; border-collapse:collapse; }
+.spec-table th { text-align:left; font-size:10px; text-transform:uppercase; letter-spacing:1.5px; color:var(--muted); padding:8px 12px; border-bottom:2px solid var(--border); }
+.spec-table td { padding:10px 12px; border-bottom:1px solid rgba(37,40,64,0.8); font-size:12px; vertical-align:top; }
+.spec-table tr:last-child td { border-bottom:none; }
+.spec-table td:first-child { color:var(--teal); font-family:'DM Mono',monospace; white-space:nowrap; }
+.spec-table td:nth-child(2) { color:var(--text); }
+.spec-table td:last-child { color:var(--muted); }
+
+/* ── ARCH DIAGRAM ── */
+.arch-diagram {
+  background: var(--ink2); border:1px solid var(--border); border-radius:20px;
+  padding:48px; margin-bottom:32px; position:relative;
+}
+.arch-layer { margin-bottom:32px; }
+.arch-layer-label { font-size:10px; text-transform:uppercase; letter-spacing:2px; color:var(--muted); margin-bottom:12px; }
+.arch-boxes { display:flex; gap:12px; flex-wrap:wrap; }
+.arch-box {
+  background: var(--panel); border:1px solid var(--border); border-radius:12px;
+  padding:14px 20px; flex:1; min-width:140px;
+  display:flex; flex-direction:column; gap:4px;
+}
+.arch-box.primary { border-color:rgba(0,229,200,0.3); background:rgba(0,229,200,0.05); }
+.arch-box.secondary { border-color:rgba(139,92,246,0.3); background:rgba(139,92,246,0.05); }
+.arch-box.tertiary { border-color:rgba(255,209,102,0.3); background:rgba(255,209,102,0.05); }
+.arch-box-title { font-family:'Syne',sans-serif; font-size:12px; font-weight:700; }
+.arch-box-sub { font-size:10px; color:var(--muted); }
+.arch-arrow { text-align:center; margin:8px 0; font-size:20px; color:var(--border); }
+
+/* ── FLOW DIAGRAM ── */
+.flow-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(260px,1fr)); gap:24px; }
+.flow-card {
+  background:var(--panel); border:1px solid var(--border); border-radius:16px;
+  padding:28px; position:relative; overflow:hidden;
+}
+.flow-card::before {
+  content:''; position:absolute; top:0; left:0; right:0; height:3px;
+  background:linear-gradient(90deg,var(--teal),var(--violet));
+}
+.flow-num { font-family:'Syne',sans-serif; font-size:48px; font-weight:800; opacity:0.05; position:absolute; top:16px; right:20px; line-height:1; }
+.flow-icon { font-size:28px; margin-bottom:12px; }
+.flow-title { font-family:'Syne',sans-serif; font-size:15px; font-weight:700; margin-bottom:8px; }
+.flow-steps { list-style:none; }
+.flow-steps li { font-size:11px; color:var(--muted); padding:4px 0; padding-left:16px; position:relative; }
+.flow-steps li::before { content:'→'; position:absolute; left:0; color:var(--teal); }
+
+/* ── COLOR SYSTEM ── */
+.color-swatches { display:grid; grid-template-columns:repeat(auto-fill, minmax(160px,1fr)); gap:16px; }
+.color-swatch { border-radius:12px; overflow:hidden; border:1px solid var(--border); }
+.swatch-preview { height:80px; }
+.swatch-info { padding:10px 12px; background:var(--panel); }
+.swatch-name { font-size:11px; font-family:'Syne',sans-serif; font-weight:700; }
+.swatch-hex { font-size:10px; color:var(--muted); }
+.swatch-usage { font-size:9px; color:var(--muted); margin-top:2px; }
+
+/* ── API ENDPOINTS ── */
+.endpoint-list { display:flex; flex-direction:column; gap:8px; }
+.endpoint-item { background:var(--ink2); border:1px solid var(--border); border-radius:10px; padding:12px 16px; display:flex; align-items:center; gap:12px; }
+.method-badge { font-size:10px; font-weight:700; padding:3px 8px; border-radius:5px; font-family:'DM Mono',monospace; min-width:48px; text-align:center; flex-shrink:0; }
+.method-badge.get { background:rgba(34,211,167,0.15); color:var(--success); }
+.method-badge.post { background:rgba(0,229,200,0.15); color:var(--teal); }
+.method-badge.put { background:rgba(255,181,71,0.15); color:var(--warning); }
+.method-badge.del { background:rgba(255,107,107,0.15); color:var(--error); }
+.endpoint-path { font-family:'DM Mono',monospace; font-size:12px; color:var(--text); flex:1; }
+.endpoint-desc { font-size:11px; color:var(--muted); }
+
+/* ── FOOTER ── */
+.doc-footer {
+  border-top:1px solid var(--border); padding:48px;
+  display:flex; align-items:center; justify-content:space-between;
+}
+.footer-logo { font-family:'Syne',sans-serif; font-size:24px; font-weight:800; color:var(--teal); }
+.footer-meta { font-size:11px; color:var(--muted); text-align:right; }
+
+/* ── RESPONSIVE ── */
+@media (max-width:768px) {
+  .design-nav { padding:0 20px; }
+  .hero { padding:80px 20px; }
+  .section { padding:60px 20px; }
+  .section-full { padding:60px 20px; }
+  .hero-stats { gap:24px; flex-wrap:wrap; }
+  .screen-grid { grid-template-columns:1fr; }
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width:4px; height:4px; }
+::-webkit-scrollbar-track { background:var(--ink); }
+::-webkit-scrollbar-thumb { background:var(--border); border-radius:2px; }
+</style>
+</head>
+<body>
+
+<!-- ── NAV ── -->
+<nav class="design-nav">
+  <div class="nav-logo">Career<span>AI</span></div>
+  <div class="nav-links">
+    <a href="#screens">Screens</a>
+    <a href="#auth">Auth Flow</a>
+    <a href="#architecture">Architecture</a>
+    <a href="#colors">Design System</a>
+    <a href="#api">API Spec</a>
+    <a href="#flows">User Flows</a>
+  </div>
+</nav>
+
+<!-- ── HERO ── -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+  <div class="hero-content">
+    <div class="hero-badge">📋 Full App Design Script — v1.0</div>
+    <h1 class="hero-title">Career<span>AI</span></h1>
+    <p class="hero-sub">The AI Career Guidance Platform</p>
+    <p class="hero-desc">
+      A complete, production-ready design specification for an AI-powered career planning application — 
+      including every screen, component, user flow, API endpoint, authentication system, and data model 
+      an AI builder needs to construct the full app.
+    </p>
+    <div class="hero-stats">
+      <div class="stat-item"><span class="stat-num">14</span><span class="stat-lbl">App Screens</span></div>
+      <div class="stat-item"><span class="stat-num">3</span><span class="stat-lbl">Auth Methods</span></div>
+      <div class="stat-item"><span class="stat-num">38</span><span class="stat-lbl">API Endpoints</span></div>
+      <div class="stat-item"><span class="stat-num">6</span><span class="stat-lbl">AI Modules</span></div>
+      <div class="stat-item"><span class="stat-num">5</span><span class="stat-lbl">User Roles</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ── SCREENS ── -->
+<div class="section-full" id="screens">
+  <div class="section-header" style="max-width:1400px;margin:0 auto 64px;">
+    <div class="section-tag">UI Screens</div>
+    <h2 class="section-title">Every Screen, <span>Designed</span></h2>
+    <p class="section-desc">All 14 application screens with live UI mockups, feature lists, and component specs. Each screen is fully described for AI-assisted implementation.</p>
+  </div>
+
+  <div class="screen-grid" style="max-width:1400px;margin:0 auto;">
+
+    <!-- ── SPLASH / LOGIN ── -->
+    <div class="screen-card">
+      <div class="screen-label">AUTH — 01</div>
+      <div class="screen-mockup">
+        <div class="auth-frame">
+          <div class="auth-glow"></div>
+          <div class="auth-logo-sm">CareerAI</div>
+          <div style="margin-bottom:20px">
+            <div class="auth-title-sm">Welcome back</div>
+            <div class="auth-sub-sm">Sign in to continue your career journey</div>
+          </div>
+          <div class="btn-google-sm" style="margin-bottom:0">
+            <svg class="google-icon" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
+            Continue with Google
+          </div>
+          <div class="divider-sm"><span class="divider-sm-text">or sign in with email</span></div>
+          <div class="input-group-sm">
+            <div class="input-label-sm">Email address</div>
+            <div class="input-field-sm">alex@example.com</div>
+          </div>
+          <div class="input-group-sm">
+            <div class="input-label-sm">Password</div>
+            <div class="input-field-sm focused">••••••••••</div>
+          </div>
+          <div class="btn-primary-sm">Sign In →</div>
+          <div class="auth-link-sm">Forgot password?</div>
+          <div class="terms-sm" style="margin-top:16px;">New to CareerAI? <span>Create account</span></div>
+        </div>
+      </div>
+      <div class="screen-info">
+        <div class="screen-name">Login Screen</div>
+        <div class="screen-desc-text">Primary authentication entry point. Supports email/password and OAuth (Google). Includes biometric login on returning devices. Password visibility toggle, remember me, and auto-fill support.</div>
+        <div class="feature-tags">
+          <span class="feat-tag">Google OAuth</span>
+          <span class="feat-tag">JWT Auth</span>
+          <span class="feat-tag">Biometric</span>
+          <span class="feat-tag">Remember Me</span>
+          <span class="feat-tag">Forgot Password</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── REGISTRATION ── -->
+    <div class="screen-card">
+      <div class="screen-label">AUTH — 02</div>
+      <div class="screen-mockup">
+        <div class="auth-frame">
+          <div class="auth-glow"></div>
+          <div class="auth-logo-sm">CareerAI</div>
+          <div style="margin-bottom:16px">
+            <div class="auth-title-sm">Create account</div>
+            <div class="auth-sub-sm">Start your AI-powered career journey today</div>
+          </div>
+          <div class="btn-google-sm" style="margin-bottom:0">
+            <svg class="google-icon" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
+            Sign up with Google
+          </div>
+          <div class="divider-sm"><span class="divider-sm-text">or register with email</span></div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:8px;">
+            <div class="input-group-sm" style="margin:0">
+              <div class="input-label-sm">First Name</div>
+              <div class="input-field-sm">Alex</div>
+            </div>
+            <div class="input-group-sm" style="margin:0">
+              <div class="input-label-sm">Last Name</div>
+              <div class="input-field-sm">Johnson</div>
+            </div>
+          </div>
+          <div class="input-group-sm">
+            <div class="input-label-sm">Email</div>
+            <div class="input-field-sm focused">alex@example.com</div>
+          </div>
+          <div class="input-group-sm">
+            <div class="input-label-sm">Password</div>
+            <div class="input-field-sm">••••••••••</div>
+          </div>
+          <div class="btn-primary-sm">Create Account →</div>
+          <div class="terms-sm">By signing up you agree to our <span>Terms</span> & <span>Privacy Policy</span></div>
+          <div class="auth-link-sm" style="margin-top:8px;">Already have an account? Sign in</div>
+        </div>
+      </div>
+      <div class="screen-info">
+        <div class="screen-name">Registration Screen</div>
+        <div class="screen-desc-text">New user account creation with email/password or Google sign-up. Password strength indicator, real-time email validation, and terms acceptance. Triggers onboarding flow on first login.</div>
+        <div class="feature-tags">
+          <span class="feat-tag">Email Validation</span>
+          <span class="feat-tag">Password Strength</span>
+          <span class="feat-tag">Google OAuth</span>
+          <span class="feat-tag">OTP Verification</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── ONBOARDING ── -->
+    <div class="screen-card">
+      <div class="screen-label">ONBOARD — 03</div>
+      <div class="screen-mockup">
+        <div class="onboard-frame">
+          <div class="step-dots">
+            <div class="dot done" style="background:var(--teal)"></div>
+            <div class="dot active"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+          </div>
+          <div class="onboard-icon">🎯</div>
+          <div class="onboard-title">What's your career goal?</div>
+          <div class="onboard-desc">Help us personalise your CareerAI experience by selecting your primary focus</div>
+          <div class="choice-grid">
+            <div class="choice-btn selected"><div class="c-icon">🚀</div><div class="c-label">Land First Job</div></div>
+            <div class="choice-btn"><div class="c-icon">🔄</div><div class="c-label">Switch Careers</div></div>
+            <div class="choice-btn"><div class="c-icon">📈</div><div class="c-label">Get Promoted</div></div>
+            <div class="choice-btn"><div class="c-icon">🌍</div><div class="c-label">Work Abroad</div></div>
+          </div>
+          <div class="btn-primary-sm">Continue →</div>
+          <div class="auth-link-sm" style="margin-top:8px;">Skip for now</div>
+        </div>
+      </div>
+      <div class="screen-info">
+        <div class="screen-name">Onboarding — Goal Selection</div>
+        <div class="screen-desc-text">5-step guided onboarding collecting career goal, current role, target industry, experience level, and skill preferences. Data trains the personalisation model. Each step auto-saves to allow resume.</div>
+        <div class="feature-tags">
+          <span class="feat-tag">5-Step Wizard</span>
+          <span class="feat-tag">Progress Save</span>
+          <span class="feat-tag">Skip Option</span>
+          <span class="feat-tag">AI Personalisation</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── DASHBOARD ── -->
+    <div class="screen-card">
+      <div class="screen-label">CORE — 04</div>
+      <div class="screen-mockup">
+        <div class="dash-frame">
+          <div class="dash-header">
+            <div>
+              <div class="dash-greeting">Good morning, <span>Alex</span> 👋</div>
+              <div style="font-size:9px;color:var(--muted)">Your career score improved +3pts</div>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;">
+              <div class="notif-dot"></div>
+              <div class="dash-avatar"></div>
+            </div>
+          </div>
+          <div class="dash-body">
+            <div class="career-score-card">
+              <div class="score-label">Career Readiness Score</div>
+              <div class="score-value">72</div>
+              <div class="score-sub">Top 34% in Software Engineering</div>
+              <div class="score-bar-track"><div class="score-bar-fill"></div></div>
+            </div>
+            <div class="section-sm-title">Quick Actions</div>
+            <div class="quick-actions">
+              <div class="qa-btn"><div class="qa-icon">📄</div><div class="qa-title-sm">Update Resume</div><div class="qa-label">+12 ATS score</div></div>
+              <div class="qa-btn"><div class="qa-icon">🧠</div><div class="qa-title-sm">Take Quiz</div><div class="qa-label">3 new questions</div></div>
+              <div class="qa-btn"><div class="qa-icon">💼</div><div class="qa-title-sm">Job Matches</div><div class="qa-label">24 new today</div></div>
+              <div class="qa-btn"><div class="qa-icon">👨‍🏫</div><div class="qa-title-sm">Find Mentor</div><div class="qa-label">8 available</div></div>
+            </div>
+            <div class="section-sm-title">AI Recommendations</div>
+            <div class="recommendation-row">
+              <div class="rec-card-sm">
+                <div class="rec-icon-sm">📚</div>
+                <div class="rec-info-sm"><div class="rec-title">React Advanced Patterns</div><div class="rec-meta">Coursera • 8h • Free</div></div>
+                <div class="rec-match">97%</div>
+              </div>
+              <div class="rec-card-sm">
+                <div class="rec-icon-sm">💼</div>
+                <div class="rec-info-sm"><div class="rec-title">Frontend Dev @ Google</div><div class="rec-meta">Remote • ₹28L–35L</div></div>
+                <div class="rec-match">89%</div>
+              </div>
+            </div>
+          </div>
+          <div class="bottom-nav">
+            <div class="bnav-item active"><div class="bnav-icon">🏠</div><div class="bnav-label">Home</div></div>
+            <div class="bnav-item"><div class="bnav-icon">💼</div><div class="bnav-label">Jobs</div></div>
+            <div class="bnav-item"><div class="bnav-icon">🗺️</div><div class="bnav-label">Roadmap</div></div>
+            <div class="bnav-item"><div class="bnav-icon">👤</div><div class="bnav-label">Profile</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="screen-info">
+        <div class="screen-name">Main Dashboard</div>
+        <div class="screen-desc-text">Central hub displaying Career Readiness Score (0–100), personalized AI recommendations, quick action shortcuts, live job alerts, and daily insights. Score updates in real-time as user completes tasks.</div>
+        <div class="feature-tags">
+          <span class="feat-tag">Live Score</span>
+          <span class="feat-tag">AI Recs</span>
+          <span class="feat-tag">Job Alerts</span>
+          <span class="feat-tag">Quick Actions</span>
+          <span class="feat-tag">Notifications</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── SKILL GAP ── -->
+    <div class="screen-card">
+      <div class="screen-label">FEATURE — 05</div>
+      <div class="screen-mockup">
+        <div class="skill-frame">
+          <div class="skill-header">
+            <div class="back-btn">←</div>
+            <div class="skill-title-hdr">Skill Gap Analysis</div>
+          </div>
+          <div class="radar-placeholder">
+            <div class="radar-bg-circles"></div>
+            <svg width="120" height="120" viewBox="-60 -60 120 120" style="position:absolute;opacity:0.7">
+              <polygon points="0,-50 43,-25 43,25 0,50 -43,25 -43,-25" fill="none" stroke="rgba(0,229,200,0.15)" stroke-width="1"/>
+              <polygon points="0,-38 30,-18 28,19 0,35 -30,15 -32,-18" fill="rgba(0,229,200,0.1)" stroke="var(--teal)" stroke-width="1.5"/>
+            </svg>
+            <span class="radar-label" style="position:absolute;bottom:12px;font-size:9px">Skills Radar</span>
+          </div>
+          <div class="skill-bars">
+            <div class="skill-bar-item">
+              <div class="skill-bar-top"><span class="skill-name-sm">React / JavaScript</span><span class="skill-pct">82%</span></div>
+              <div class="skill-track"><div class="skill-fill high" style="width:82%"></div></div>
+            </div>
+            <div class="skill-bar-item">
+              <div class="skill-bar-top"><span class="skill-name-sm">System Design</span><span class="skill-pct">54%</span></div>
+              <div class="skill-track"><div class="skill-fill mid" style="width:54%"></div></div>
+            </div>
+            <div class="skill-bar-item">
+              <div class="skill-bar-top"><span class="skill-name-sm">DSA / Algorithms</span><span class="skill-pct">38%</span></div>
+              <div class="skill-track"><div class="skill-fill low" style="width:38%"></div></div>
+            </div>
+            <div class="skill-bar-item">
+              <div class="skill-bar-top"><span class="skill-name-sm">Cloud (AWS/GCP)</span><span class="skill-pct">29%</span></div>
+              <div class="skill-track"><div class="skill-fill low" style="width:29%"></div></div>
+            </div>
+            <div class="skill-bar-item">
+              <div class="skill-bar-top"><span class="skill-name-sm">Communication</span><span class="skill-pct">76%</span></div>
+              <div class="skill-track"><div class="skill-fill high" style="width:76%"></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="screen-info">
+        <div class="screen-name">Skill Gap Analysis</div>
+        <div class="screen-desc-text">Visual radar chart + bar graphs showing current skill levels vs. required skills for target role. AI identifies exact gaps and links each gap to a recommended learning resource. Updated after each assessment.</div>
+        <div class="feature-tags">
+          <span class="feat-tag">Radar Chart</span>
+          <span class="feat-tag">Gap Detection</span>
+          <span class="feat-tag">Course Links</span>
+          <span class="feat-tag">Target Role Compare</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── JOB BOARD ── -->
+    <div class="screen-card">
+      <div class="screen-label">FEATURE — 06</div>
+      <div class="screen-mockup">
+        <div class="job-frame">
+          <div class="job-search">
+            <div class="search-bar"><div class="s-icon">🔍</div><div class="s-text">Search roles, companies...</div></div>
+          </div>
+          <div class="filter-row">
+            <div class="filter-chip active">All</div>
+            <div class="filter-chip">Remote</div>
+            <div class="filter-chip">₹20L+</div>
+            <div class="filter-chip">Fresher</div>
+            <div class="filter-chip">Startup</div>
+            <div class="filter-chip">MNC</div>
+          </div>
+          <div class="job-list">
+            <div class="job-card-sm">
+              <div class="job-card-top">
+                <div class="company-logo-sm">G</div>
+                <div class="job-info-sm"><div class="job-title-sm">Software Engineer L4</div><div class="company-name-sm">Google • Hyderabad</div></div>
+                <div class="match-badge">91% match</div>
+              </div>
+              <div class="job-tags-sm"><div class="jtag">Python</div><div class="jtag">Distributed</div><div class="jtag">Full-time</div></div>
+              <div class="salary-sm">₹28L – ₹42L / year</div>
+            </div>
+            <div class="job-card-sm">
+              <div class="job-card-top">
+                <div class="company-logo-sm">M</div>
+                <div class="job-info-sm"><div class="job-title-sm">Frontend Engineer</div><div class="company-name-sm">Microsoft • Remote</div></div>
+                <div class="match-badge">87% match</div>
+              </div>
+              <div class="job-tags-sm"><div class="jtag">React</div><div class="jtag">TypeScript</div><div class="jtag">Remote</div></div>
+              <div class="salary-sm">₹22L – ₹35L / year</div>
+            </div>
+            <div class="job-card-sm">
+              <div class="job-card-top">
+                <div class="company-logo-sm">S</div>
+                <div class="job-info-sm"><div class="job-title-sm">ML Engineer</div><div class="company-name-sm">Swiggy • Bangalore</div></div>
+                <div class="match-badge">79% match</div>
+              </div>
+              <div class="job-tags-sm"><div class="jtag">PyTorch</div><div class="jtag">NLP</div><div class="jtag">Hybrid</div></div>
+              <div class="salary-sm">₹18L – ₹28L / year</div>
+            </div>
+          </div>
+          <div class="bottom-nav">
+            <div class="bnav-item"><div class="bnav-icon">🏠</div><div class="bnav-label">Home</div></div>
+            <div class="bnav-item active"><div class="bnav-icon">💼</div><div class="bnav-label">Jobs</div></div>
+            <div class="bnav-item"><div class="bnav-icon">🗺️</div><div class="bnav-label">Roadmap</div></div>
+            <div class="bnav-item"><div class="bnav-icon">👤</div><div class="bnav-label">Profile</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="screen-info">
+        <div class="screen-name">AI Job Board</div>
+        <div class="screen-desc-text">Real-time job listings ranked by AI match percentage. Filters by location, salary, type, experience, industry. Each card shows match score, skills required, salary range. One-tap apply with pre-filled resume data.</div>
+        <div class="feature-tags">
+          <span class="feat-tag">Match Score</span>
+          <span class="feat-tag">Real-time Feed</span>
+          <span class="feat-tag">Smart Filters</span>
+          <span class="feat-tag">1-tap Apply</span>
+          <span class="feat-tag">Salary Data</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── RESUME BUILDER ── -->
+    <div class="screen-card">
+      <div class="screen-label">FEATURE — 07</div>
+      <div class="screen-mockup">
+        <div class="resume-frame">
+          <div class="skill-header">
+            <div class="back-btn">←</div>
+            <div class="skill-title-hdr">Smart Resume Builder</div>
+          </div>
+          <div class="resume-card">
+            <div class="resume-hdr">
+              <div class="resume-avatar-sm"></div>
+              <div>
+                <div class="resume-name-sm">Alex Johnson</div>
+                <div class="resume-role-sm">Frontend Engineer • Hyderabad, IN</div>
+                <div style="font-size:8px;color:#888;margin-top:2px">alex@email.com • github.com/alex</div>
+              </div>
+            </div>
+            <div class="resume-section-title">EXPERIENCE</div>
+            <div class="resume-item-sm">Frontend Dev at TechCorp (2022–Present)</div>
+            <div class="resume-item-sm">Built React dashboards serving 500K users</div>
+            <div class="resume-item-sm">Reduced load time by 40% via code splitting</div>
+            <div class="resume-section-title">EDUCATION</div>
+            <div class="resume-item-sm">B.Tech CSE • JNTU Hyderabad • 2022</div>
+            <div class="resume-section-title">SKILLS</div>
+            <div style="font-size:9px;color:#555;padding:2px 0;padding-left:12px;">React, TypeScript, Node.js, AWS, Git, Figma</div>
+            <div class="ai-score-overlay">
+              <div class="ai-score-row">
+                <div><div class="ai-score-val">84</div><div class="ai-score-label">ATS Score</div></div>
+                <div style="text-align:right;font-size:9px;color:var(--muted)">+16 to reach<br><span style="color:var(--teal)">100</span></div>
+              </div>
+              <div class="ai-suggest">💡 Add "CI/CD" to skills to boost 4 points</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="screen-info">
+        <div class="screen-name">AI Resume Builder</div>
+        <div class="screen-desc-text">Live resume editor with real-time ATS scoring (0–100). AI suggests keyword improvements, rewrites bullet points for impact, and auto-adapts content for specific job descriptions. Multiple export formats supported.</div>
+        <div class="feature-tags">
+          <span class="feat-tag">ATS Scoring</span>
+          <span class="feat-tag">AI Rewrite</span>
+          <span class="feat-tag">Job-Specific</span>
+          <span class="feat-tag">PDF Export</span>
+          <span class="feat-tag">Templates</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── ROADMAP ── -->
+    <div class="screen-card">
+      <div class="screen-label">FEATURE — 08</div>
+      <div class="screen-mockup">
+        <div class="roadmap-frame">
+          <div class="roadmap-title">🗺️ Your Career Roadmap</div>
+          <div style="font-size:9px;color:var(--muted);margin-bottom:16px;">Target: Senior Frontend Engineer by Dec 2026</div>
+          <div class="roadmap-path">
+            <div class="road-step done">
+              <div class="road-step-card">
+                <div class="road-step-title">Phase 1: Foundation</div>
+                <div class="road-step-sub">HTML, CSS, JavaScript ES6+</div>
+                <div class="road-step-badge badge-done">✓ Completed</div>
+              </div>
+            </div>
+            <div class="road-step done">
+              <div class="road-step-card">
+                <div class="road-step-title">Phase 2: React Mastery</div>
+                <div class="road-step-sub">Hooks, Context, Performance</div>
+                <div class="road-step-badge badge-done">✓ Completed</div>
+              </div>
+            </div>
+            <div class="road-step active">
+              <div class="road-step-card">
+                <div class="road-step-title">Phase 3: System Design</div>
+                <div class="road-step-sub">Scalability, Databases, APIs</div>
+                <div class="road-step-badge badge-active">⚡ In Progress</div>
+              </div>
+            </div>
+            <div class="road-step">
+              <div class="road-step-card">
+                <div class="road-step-title">Phase 4: Leadership</div>
+                <div class="road-step-sub">Team management, Architecture</div>
+                <div class="road-step-badge badge-locked">🔒 Locked</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="screen-info">
+        <div class="screen-name">Career Roadmap</div>
+        <div class="screen-desc-text">AI-generated visual milestone roadmap for the user's target role. Shows completed, in-progress, and upcoming phases. Each node links to relevant learning resources, estimated timelines, and skill prerequisites.</div>
+        <div class="feature-tags">
+          <span class="feat-tag">AI Generated</span>
+          <span class="feat-tag">Milestones</span>
+          <span class="feat-tag">Progress Tracking</span>
+          <span class="feat-tag">Timeline View</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── MENTOR ── -->
+    <div class="screen-card">
+      <div class="screen-label">FEATURE — 09</div>
+      <div class="screen-mockup">
+        <div class="mentor-frame">
+          <div style="padding:12px 16px; background:var(--panel);border-bottom:1px solid var(--border);">
+            <div style="font-family:'Syne',sans-serif;font-size:13px;font-weight:700;">Find a Mentor 👨‍🏫</div>
+            <div style="font-size:9px;color:var(--muted);">AI-matched to your career goals</div>
+          </div>
+          <div class="mentor-list">
+            <div class="mentor-card-sm">
+              <div class="mentor-avatar-sm">👩‍💻</div>
+              <div style="flex:1;">
+                <div class="mentor-name">Priya Sharma</div>
+                <div class="mentor-role-sm">Senior SDE @ Amazon • 8 yrs exp</div>
+                <div class="mentor-tags-sm">
+                  <div class="mentor-tag-sm">React</div>
+                  <div class="mentor-tag-sm">System Design</div>
+                  <div class="mentor-tag-sm">DSA</div>
+                </div>
+                <div class="mentor-rating">⭐ 4.9 (124 sessions)</div>
+              </div>
+              <div class="book-btn-sm">Book</div>
+            </div>
+            <div class="mentor-card-sm">
+              <div class="mentor-avatar-sm">👨‍🔬</div>
+              <div style="flex:1;">
+                <div class="mentor-name">Rahul Verma</div>
+                <div class="mentor-role-sm">ML Engineer @ Google • 6 yrs exp</div>
+                <div class="mentor-tags-sm">
+                  <div class="mentor-tag-sm">Machine Learning</div>
+                  <div class="mentor-tag-sm">Python</div>
+                </div>
+                <div class="mentor-rating">⭐ 4.8 (89 sessions)</div>
+              </div>
+              <div class="book-btn-sm">Book</div>
+            </div>
+            <div class="mentor-card-sm">
+              <div class="mentor-avatar-sm">👩‍🎨</div>
+              <div style="flex:1;">
+                <div class="mentor-name">Anita Rao</div>
+                <div class="mentor-role-sm">Product Designer @ Figma • 5 yrs</div>
+                <div class="mentor-tags-sm">
+                  <div class="mentor-tag-sm">UX Design</div>
+                  <div class="mentor-tag-sm">Figma</div>
+                </div>
+                <div class="mentor-rating">⭐ 5.0 (67 sessions)</div>
+              </div>
+              <div class="book-btn-sm">Book</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="screen-info">
+        <div class="screen-name">Mentor Marketplace</div>
+        <div class="screen-desc-text">AI-curated mentor recommendations based on user's target role and skill gaps. Profiles show expertise, company, rating, and session count. Integrated booking calendar with video call link generation via Zoom/Meet API.</div>
+        <div class="feature-tags">
+          <span class="feat-tag">AI Matching</span>
+          <span class="feat-tag">Calendar Booking</span>
+          <span class="feat-tag">Video Calls</span>
+          <span class="feat-tag">Ratings</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── ASSESSMENT ── -->
+    <div class="screen-card">
+      <div class="screen-label">FEATURE — 10</div>
+      <div class="screen-mockup">
+        <div class="assess-frame">
+          <div class="assess-progress">
+            <div class="assess-prog-bar"><div class="assess-prog-fill" style="width:40%"></div></div>
+            <div class="assess-q-num">4 / 10</div>
+          </div>
+          <div style="font-size:9px;color:var(--teal);margin-bottom:8px;letter-spacing:1px;text-transform:uppercase;">Personality Assessment</div>
+          <div class="assess-question">When faced with a complex technical problem at work, what's your instinct?</div>
+          <div class="assess-context">Choose the response that feels most natural to you</div>
+          <div class="assess-options">
+            <div class="assess-option selected">🧩 Break it into smaller parts and tackle methodically</div>
+            <div class="assess-option">⚡ Try a quick solution first, iterate if needed</div>
+            <div class="assess-option">👥 Discuss with the team before diving in</div>
+            <div class="assess-option">📖 Research existing solutions first</div>
+          </div>
+          <div class="assess-nav">
+            <div class="prev">← Back</div>
+            <div class="next">Next Question →</div>
+          </div>
+        </div>
+      </div>
+      <div class="screen-info">
+        <div class="screen-name">AI Assessment Quiz</div>
+        <div class="screen-desc-text">Multi-category assessments: Personality (MBTI-style), Technical Skills, and Career Aptitude. Adaptive questioning adjusts difficulty based on answers. Results feed directly into Career Readiness Score and recommendations.</div>
+        <div class="feature-tags">
+          <span class="feat-tag">Adaptive AI</span>
+          <span class="feat-tag">MBTI Analysis</span>
+          <span class="feat-tag">Tech Quizzes</span>
+          <span class="feat-tag">Score Impact</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── ANALYTICS ── -->
+    <div class="screen-card">
+      <div class="screen-label">FEATURE — 11</div>
+      <div class="screen-mockup">
+        <div class="analytics-frame">
+          <div style="font-family:'Syne',sans-serif;font-size:13px;font-weight:700;margin-bottom:12px;">📊 Career Analytics</div>
+          <div class="chart-placeholder">
+            <div class="chart-title">Profile Views (Last 30 Days)</div>
+            <div class="mini-chart">
+              <div class="mini-bar" style="height:30%"></div>
+              <div class="mini-bar" style="height:50%"></div>
+              <div class="mini-bar" style="height:40%"></div>
+              <div class="mini-bar" style="height:70%"></div>
+              <div class="mini-bar" style="height:60%"></div>
+              <div class="mini-bar" style="height:80%"></div>
+              <div class="mini-bar highlight" style="height:100%"></div>
+            </div>
+          </div>
+          <div class="insight-grid">
+            <div class="insight-card"><div class="insight-val teal">72</div><div class="insight-lbl-sm">Career Score</div></div>
+            <div class="insight-card"><div class="insight-val gold">24</div><div class="insight-lbl-sm">Job Matches</div></div>
+            <div class="insight-card"><div class="insight-val rose">3</div><div class="insight-lbl-sm">Applications</div></div>
+            <div class="insight-card"><div class="insight-val teal">84%</div><div class="insight-lbl-sm">ATS Score</div></div>
+          </div>
+          <div style="margin-top:10px;font-size:9px;color:var(--muted);background:rgba(0,229,200,0.05);border:1px solid rgba(0,229,200,0.1);border-radius:8px;padding:8px;">
+            💡 <span style="color:var(--teal)">AI Insight:</span> Your profile gets 3x more views on Tuesdays. Schedule applications then.
+          </div>
+        </div>
+      </div>
+      <div class="screen-info">
+        <div class="screen-name">Analytics Dashboard</div>
+        <div class="screen-desc-text">Comprehensive data visualisation of career progress: score history, skill improvement over time, job application funnel, profile view trends, and mentor session impact. Powered by Chart.js with D3.js for complex visualisations.</div>
+        <div class="feature-tags">
+          <span class="feat-tag">Chart.js</span>
+          <span class="feat-tag">AI Insights</span>
+          <span class="feat-tag">Score History</span>
+          <span class="feat-tag">App Funnel</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ── AUTH FLOW SPEC ── -->
+<div class="section" id="auth">
+  <div class="section-header">
+    <div class="section-tag">Authentication</div>
+    <h2 class="section-title">Complete <span>Auth System</span></h2>
+    <p class="section-desc">Every authentication pathway, token strategy, and security consideration documented for zero-ambiguity implementation.</p>
+  </div>
+
+  <div class="flow-grid">
+    <div class="flow-card">
+      <div class="flow-num">1</div>
+      <div class="flow-icon">📧</div>
+      <div class="flow-title">Email / Password Flow</div>
+      <ul class="flow-steps">
+        <li>User enters email + password on login screen</li>
+        <li>Frontend validates: email format, password min 8 chars</li>
+        <li>POST /auth/login → server returns JWT access token (15min) + refresh token (30 days)</li>
+        <li>Access token stored in memory (NOT localStorage)</li>
+        <li>Refresh token stored in httpOnly cookie</li>
+        <li>Auto-refresh when access token expires via silent renew</li>
+        <li>On logout: DELETE /auth/logout, clear cookie + memory</li>
+      </ul>
+    </div>
+    <div class="flow-card">
+      <div class="flow-num">2</div>
+      <div class="flow-icon">🔴</div>
+      <div class="flow-title">Google OAuth 2.0 Flow</div>
+      <ul class="flow-steps">
+        <li>User taps "Continue with Google" button</li>
+        <li>Redirect to Google OAuth consent screen</li>
+        <li>Google returns auth code to callback URL</li>
+        <li>Backend exchanges code for Google tokens via Google API</li>
+        <li>Server checks if email exists → login or auto-register</li>
+        <li>New users skip email verification, go directly to onboarding</li>
+        <li>Return CareerAI JWT pair identical to email flow</li>
+      </ul>
+    </div>
+    <div class="flow-card">
+      <div class="flow-num">3</div>
+      <div class="flow-icon">📝</div>
+      <div class="flow-title">New User Registration</div>
+      <ul class="flow-steps">
+        <li>User fills first name, last name, email, password</li>
+        <li>Frontend: real-time password strength meter (weak/fair/strong)</li>
+        <li>POST /auth/register → server sends OTP to email</li>
+        <li>OTP verification screen: 6-digit code, 5-minute expiry, 3 attempts</li>
+        <li>On verify → account activated, JWT issued</li>
+        <li>Redirect to 5-step onboarding wizard</li>
+        <li>Onboarding data saved incrementally (can resume later)</li>
+      </ul>
+    </div>
+    <div class="flow-card">
+      <div class="flow-num">4</div>
+      <div class="flow-icon">🔑</div>
+      <div class="flow-title">Password Reset Flow</div>
+      <ul class="flow-steps">
+        <li>User taps "Forgot Password?" on login screen</li>
+        <li>Enter email → POST /auth/forgot-password</li>
+        <li>Server sends password reset link (expires in 1hr)</li>
+        <li>Clicking link opens in-app browser → validates token</li>
+        <li>User sets new password (must differ from last 3)</li>
+        <li>POST /auth/reset-password with token + new password</li>
+        <li>All active sessions invalidated, user re-logged in</li>
+      </ul>
+    </div>
+    <div class="flow-card">
+      <div class="flow-num">5</div>
+      <div class="flow-icon">🛡️</div>
+      <div class="flow-title">Security &amp; Role System</div>
+      <ul class="flow-steps">
+        <li>Roles: Student | Professional | Mentor | Admin | Super Admin</li>
+        <li>Role stored in JWT payload claims</li>
+        <li>Mentors require profile verification (document upload + admin approval)</li>
+        <li>Rate limiting: 5 failed login attempts → 15min account lock</li>
+        <li>All auth endpoints behind HTTPS only</li>
+        <li>CSRF protection via double-submit cookie pattern</li>
+        <li>Audit logs for all auth events (login, logout, password change)</li>
+      </ul>
+    </div>
+    <div class="flow-card">
+      <div class="flow-num">6</div>
+      <div class="flow-icon">📱</div>
+      <div class="flow-title">Biometric &amp; Session</div>
+      <ul class="flow-steps">
+        <li>On supported devices: offer Face ID / Fingerprint after first login</li>
+        <li>Biometric wraps refresh token retrieval (not stores password)</li>
+        <li>"Remember this device for 30 days" checkbox</li>
+        <li>Session dashboard: view all active sessions with device info</li>
+        <li>One-tap revoke any session remotely</li>
+        <li>Push notification on new device login</li>
+        <li>Google Sign-In handled via expo-auth-session (mobile)</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ── ARCHITECTURE ── -->
+<div class="section" id="architecture">
+  <div class="section-header">
+    <div class="section-tag">System Design</div>
+    <h2 class="section-title">Technical <span>Architecture</span></h2>
+    <p class="section-desc">Full-stack modular architecture designed for 100K+ concurrent users, real-time AI inference, and global scalability.</p>
+  </div>
+
+  <div class="arch-diagram">
+    <div class="arch-layer">
+      <div class="arch-layer-label">▸ Client Layer</div>
+      <div class="arch-boxes">
+        <div class="arch-box primary"><div class="arch-box-title">React Native App</div><div class="arch-box-sub">iOS + Android via Expo SDK 50</div></div>
+        <div class="arch-box primary"><div class="arch-box-title">React.js Web App</div><div class="arch-box-sub">Next.js 14, TypeScript, Tailwind</div></div>
+        <div class="arch-box primary"><div class="arch-box-title">PWA Support</div><div class="arch-box-sub">Offline-first, service workers</div></div>
+      </div>
+    </div>
+    <div class="arch-arrow">↕</div>
+    <div class="arch-layer">
+      <div class="arch-layer-label">▸ API Gateway</div>
+      <div class="arch-boxes">
+        <div class="arch-box"><div class="arch-box-title">API Gateway</div><div class="arch-box-sub">NGINX, rate limiting, SSL termination</div></div>
+        <div class="arch-box"><div class="arch-box-title">Auth Service</div><div class="arch-box-sub">Clerk / Auth0, JWT, OAuth2</div></div>
+        <div class="arch-box"><div class="arch-box-title">WebSocket Server</div><div class="arch-box-sub">Real-time notifications & chat</div></div>
+      </div>
+    </div>
+    <div class="arch-arrow">↕</div>
+    <div class="arch-layer">
+      <div class="arch-layer-label">▸ Backend Services (Microservices)</div>
+      <div class="arch-boxes">
+        <div class="arch-box"><div class="arch-box-title">User Service</div><div class="arch-box-sub">Node.js + Express, profiles, roles</div></div>
+        <div class="arch-box"><div class="arch-box-title">Job Service</div><div class="arch-box-sub">Django REST, job scraping, search</div></div>
+        <div class="arch-box"><div class="arch-box-title">Resume Service</div><div class="arch-box-sub">FastAPI, ATS parsing, PDF gen</div></div>
+        <div class="arch-box"><div class="arch-box-title">Mentor Service</div><div class="arch-box-sub">Booking, calendar, video links</div></div>
+        <div class="arch-box"><div class="arch-box-title">Notification Service</div><div class="arch-box-sub">Push, email, in-app alerts</div></div>
+      </div>
+    </div>
+    <div class="arch-arrow">↕</div>
+    <div class="arch-layer">
+      <div class="arch-layer-label">▸ AI / ML Layer</div>
+      <div class="arch-boxes">
+        <div class="arch-box secondary"><div class="arch-box-title">Career Recommendation Engine</div><div class="arch-box-sub">Random Forest + collaborative filtering</div></div>
+        <div class="arch-box secondary"><div class="arch-box-title">NLP Resume Analyser</div><div class="arch-box-sub">BERT fine-tuned, HuggingFace hosted</div></div>
+        <div class="arch-box secondary"><div class="arch-box-title">Skill Gap Model</div><div class="arch-box-sub">K-Means clustering, custom classifier</div></div>
+        <div class="arch-box secondary"><div class="arch-box-title">Job Match Scorer</div><div class="arch-box-sub">KNN similarity, cosine scoring</div></div>
+        <div class="arch-box secondary"><div class="arch-box-title">Career Score Model</div><div class="arch-box-sub">XGBoost, real-time inference</div></div>
+      </div>
+    </div>
+    <div class="arch-arrow">↕</div>
+    <div class="arch-layer">
+      <div class="arch-layer-label">▸ Data Layer</div>
+      <div class="arch-boxes">
+        <div class="arch-box tertiary"><div class="arch-box-title">PostgreSQL</div><div class="arch-box-sub">Users, sessions, applications</div></div>
+        <div class="arch-box tertiary"><div class="arch-box-title">MongoDB</div><div class="arch-box-sub">Jobs, resumes, recommendations</div></div>
+        <div class="arch-box tertiary"><div class="arch-box-title">Redis</div><div class="arch-box-sub">Session cache, rate limiting</div></div>
+        <div class="arch-box tertiary"><div class="arch-box-title">AWS S3</div><div class="arch-box-sub">Resume files, user uploads</div></div>
+        <div class="arch-box tertiary"><div class="arch-box-title">Elasticsearch</div><div class="arch-box-sub">Full-text job search</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── DESIGN SYSTEM ── -->
+<div class="section" id="colors">
+  <div class="section-header">
+    <div class="section-tag">Design System</div>
+    <h2 class="section-title">Color &amp; <span>Typography</span></h2>
+    <p class="section-desc">Complete design token system. AI builders must use these exact values for visual consistency across all screens.</p>
+  </div>
+
+  <div class="spec-section" style="margin-bottom:32px;">
+    <h3>🎨 Color <span>Tokens</span></h3>
+    <div class="color-swatches">
+      <div class="color-swatch"><div class="swatch-preview" style="background:#0A0B14"></div><div class="swatch-info"><div class="swatch-name">Ink Deep</div><div class="swatch-hex">#0A0B14</div><div class="swatch-usage">App background</div></div></div>
+      <div class="color-swatch"><div class="swatch-preview" style="background:#161828"></div><div class="swatch-info"><div class="swatch-name">Panel</div><div class="swatch-hex">#161828</div><div class="swatch-usage">Cards, drawers</div></div></div>
+      <div class="color-swatch"><div class="swatch-preview" style="background:#252840"></div><div class="swatch-info"><div class="swatch-name">Border</div><div class="swatch-hex">#252840</div><div class="swatch-usage">Dividers, inputs</div></div></div>
+      <div class="color-swatch"><div class="swatch-preview" style="background:#00E5C8"></div><div class="swatch-info"><div class="swatch-name">Teal Primary</div><div class="swatch-hex">#00E5C8</div><div class="swatch-usage">CTAs, highlights, score</div></div></div>
+      <div class="color-swatch"><div class="swatch-preview" style="background:#8B5CF6"></div><div class="swatch-info"><div class="swatch-name">Violet</div><div class="swatch-hex">#8B5CF6</div><div class="swatch-usage">Active states, accents</div></div></div>
+      <div class="color-swatch"><div class="swatch-preview" style="background:#FFD166"></div><div class="swatch-info"><div class="swatch-name">Gold</div><div class="swatch-hex">#FFD166</div><div class="swatch-usage">Salary, ratings, rewards</div></div></div>
+      <div class="color-swatch"><div class="swatch-preview" style="background:#FF6B9D"></div><div class="swatch-info"><div class="swatch-name">Rose</div><div class="swatch-hex">#FF6B9D</div><div class="swatch-usage">Notifications, alerts</div></div></div>
+      <div class="color-swatch"><div class="swatch-preview" style="background:#E8EAF6"></div><div class="swatch-info"><div class="swatch-name">Text Primary</div><div class="swatch-hex">#E8EAF6</div><div class="swatch-usage">Body text, headings</div></div></div>
+      <div class="color-swatch"><div class="swatch-preview" style="background:#7B7FA8"></div><div class="swatch-info"><div class="swatch-name">Text Muted</div><div class="swatch-hex">#7B7FA8</div><div class="swatch-usage">Subtitles, metadata</div></div></div>
+    </div>
+  </div>
+
+  <div class="spec-section">
+    <h3>🔤 Typography <span>Scale</span></h3>
+    <table class="spec-table">
+      <tr><th>TOKEN</th><th>SPEC</th><th>USAGE</th></tr>
+      <tr><td>display-xl</td><td>Syne 800 · 72px · -3px tracking</td><td>Hero titles only</td></tr>
+      <tr><td>display-lg</td><td>Syne 700 · 48px · -2px tracking</td><td>Section headings</td></tr>
+      <tr><td>display-md</td><td>Syne 700 · 32px · -1px tracking</td><td>Card titles, page headers</td></tr>
+      <tr><td>heading-sm</td><td>Syne 600 · 20px · -0.5px tracking</td><td>Component headings</td></tr>
+      <tr><td>body-lg</td><td>DM Mono 400 · 16px · 1.7 leading</td><td>Main content body</td></tr>
+      <tr><td>body-md</td><td>DM Mono 400 · 14px · 1.6 leading</td><td>Descriptions, metadata</td></tr>
+      <tr><td>label</td><td>DM Mono 500 · 11px · 1.5px tracking</td><td>Input labels, tags</td></tr>
+      <tr><td>caption</td><td>DM Mono 400 · 10px · 1px tracking</td><td>Helper text, timestamps</td></tr>
+      <tr><td>code</td><td>DM Mono 400 · 13px</td><td>Technical content, APIs</td></tr>
+      <tr><td>serif-italic</td><td>Fraunces 300 Italic · 24px</td><td>Pull quotes, hero sub</td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- ── API SPEC ── -->
+<div class="section" id="api">
+  <div class="section-header">
+    <div class="section-tag">API Specification</div>
+    <h2 class="section-title">All <span>38 Endpoints</span></h2>
+    <p class="section-desc">Complete REST API specification. Base URL: <code style="color:var(--teal);background:rgba(0,229,200,0.08);padding:2px 8px;border-radius:4px;">https://api.careerai.app/v1</code></p>
+  </div>
+
+  <div class="spec-section" style="margin-bottom:24px;">
+    <h3>🔐 Auth <span>Endpoints</span></h3>
+    <div class="endpoint-list">
+      <div class="endpoint-item"><span class="method-badge post">POST</span><span class="endpoint-path">/auth/register</span><span class="endpoint-desc">Create new account · Body: {firstName, lastName, email, password}</span></div>
+      <div class="endpoint-item"><span class="method-badge post">POST</span><span class="endpoint-path">/auth/login</span><span class="endpoint-desc">Email+password login · Returns: {accessToken, refreshToken, user}</span></div>
+      <div class="endpoint-item"><span class="method-badge post">POST</span><span class="endpoint-path">/auth/google</span><span class="endpoint-desc">Google OAuth login · Body: {idToken} from Google SDK</span></div>
+      <div class="endpoint-item"><span class="method-badge post">POST</span><span class="endpoint-path">/auth/refresh</span><span class="endpoint-desc">Refresh access token · Uses httpOnly cookie refreshToken</span></div>
+      <div class="endpoint-item"><span class="method-badge post">POST</span><span class="endpoint-path">/auth/verify-otp</span><span class="endpoint-desc">Verify email OTP after registration · Body: {email, otp}</span></div>
+      <div class="endpoint-item"><span class="method-badge post">POST</span><span class="endpoint-path">/auth/forgot-password</span><span class="endpoint-desc">Send password reset email · Body: {email}</span></div>
+      <div class="endpoint-item"><span class="method-badge post">POST</span><span class="endpoint-path">/auth/reset-password</span><span class="endpoint-desc">Reset with token · Body: {token, newPassword}</span></div>
+      <div class="endpoint-item"><span class="method-badge del">DEL</span><span class="endpoint-path">/auth/logout</span><span class="endpoint-desc">Invalidate session · Clears refresh token cookie</span></div>
+    </div>
+  </div>
+
+  <div class="spec-section" style="margin-bottom:24px;">
+    <h3>👤 User &amp; <span>Profile Endpoints</span></h3>
+    <div class="endpoint-list">
+      <div class="endpoint-item"><span class="method-badge get">GET</span><span class="endpoint-path">/user/me</span><span class="endpoint-desc">Get current user profile + career score</span></div>
+      <div class="endpoint-item"><span class="method-badge put">PUT</span><span class="endpoint-path">/user/me</span><span class="endpoint-desc">Update profile · Body: {name, bio, location, targetRole, skills[]}</span></div>
+      <div class="endpoint-item"><span class="method-badge post">POST</span><span class="endpoint-path">/user/onboarding</span><span class="endpoint-desc">Save onboarding step · Body: {step, data}</span></div>
+      <div class="endpoint-item"><span class="method-badge get">GET</span><span class="endpoint-path">/user/score</span><span class="endpoint-desc">Get career readiness score + breakdown by category</span></div>
+      <div class="endpoint-item"><span class="method-badge get">GET</span><span class="endpoint-path">/user/sessions</span><span class="endpoint-desc">List all active auth sessions with device info</span></div>
+      <div class="endpoint-item"><span class="method-badge del">DEL</span><span class="endpoint-path">/user/sessions/:id</span><span class="endpoint-desc">Revoke a specific session remotely</span></div>
+    </div>
+  </div>
+
+  <div class="spec-section" style="margin-bottom:24px;">
+    <h3>🤖 AI &amp; <span>Recommendations</span></h3>
+    <div class="endpoint-list">
+      <div class="endpoint-item"><span class="method-badge get">GET</span><span class="endpoint-path">/ai/recommendations</span><span class="endpoint-desc">Get personalized career, job, and course recommendations</span></div>
+      <div class="endpoint-item"><span class="method-badge get">GET</span><span class="endpoint-path">/ai/skill-gap</span><span class="endpoint-desc">Get skill gap analysis vs target role · Query: {targetRole}</span></div>
+      <div class="endpoint-item"><span class="method-badge post">POST</span><span class="endpoint-path">/ai/roadmap/generate</span><span class="endpoint-desc">Generate career roadmap · Body: {targetRole, currentLevel, timeline}</span></div>
+      <div class="endpoint-item"><span class="method-badge get">GET</span><span class="endpoint-path">/ai/roadmap</span><span class="endpoint-desc">Get user's current career roadmap with progress</span></div>
+      <div class="endpoint-item"><span class="method-badge post">POST</span><span class="endpoint-path">/ai/chat</span><span class="endpoint-desc">AI career advisor chat · Body: {message, conversationId}</span></div>
+    </div>
+  </div>
+
+  <div class="spec-section" style="margin-bottom:24px;">
+    <h3>💼 Jobs &amp; <span>Applications</span></h3>
+    <div class="endpoint-list">
+      <div class="endpoint-item"><span class="method-badge get">GET</span><span class="endpoint-path">/jobs</span><span class="endpoint-desc">List jobs · Query: {search, location, salary, type, page, limit}</span></div>
+      <div class="endpoint-item"><span class="method-badge get">GET</span><span class="endpoint-path">/jobs/:id</span><span class="endpoint-desc">Get single job detail with match analysis</span></div>
+      <div class="endpoint-item"><span class="method-badge post">POST</span><span class="endpoint-path">/jobs/:id/apply</span><span class="endpoint-desc">Apply to job · Body: {resumeId, coverLetter?}</span></div>
+      <div class="endpoint-item"><span class="method-badge get">GET</span><span class="endpoint-path">/jobs/matches</span><span class="endpoint-desc">Get AI-ranked job matches for current user profile</span></div>
+      <div class="endpoint-item"><span class="method-badge get">GET</span><span class="endpoint-path">/applications</span><span class="endpoint-desc">List user's job applications with status tracking</span></div>
+      <div class="endpoint-item"><span class="method-badge get">GET</span><span class="endpoint-path">/jobs/trends</span><span class="endpoint-desc">Get market trend data · Query: {industry, role, location}</span></div>
+    </div>
+  </div>
+
+  <div class="spec-section" style="margin-bottom:24px;">
+    <h3>📄 Resume <span>Endpoints</span></h3>
+    <div class="endpoint-list">
+      <div class="endpoint-item"><span class="method-badge get">GET</span><span class="endpoint-path">/resume</span><span class="endpoint-desc">Get user's resume data (structured JSON)</span></div>
+      <div class="endpoint-item"><span class="method-badge put">PUT</span><span class="endpoint-path">/resume</span><span class="endpoint-desc">Update resume sections · Body: {section, data}</span></div>
+      <div class="endpoint-item"><span class="method-badge post">POST</span><span class="endpoint-path">/resume/analyse</span><span class="endpoint-desc">Run AI ATS analysis · Returns score + suggestions</span></div>
+      <div class="endpoint-item"><span class="method-badge post">POST</span><span class="endpoint-path">/resume/optimise</span><span class="endpoint-desc">AI rewrite for target job · Body: {jobId}</span></div>
+      <div class="endpoint-item"><span class="method-badge post">POST</span><span class="endpoint-path">/resume/export</span><span class="endpoint-desc">Export resume · Body: {format: "pdf"|"docx", templateId}</span></div>
+      <div class="endpoint-item"><span class="method-badge post">POST</span><span class="endpoint-path">/resume/import</span><span class="endpoint-desc">Parse uploaded resume file → structured JSON</span></div>
+    </div>
+  </div>
+
+  <div class="spec-section">
+    <h3>👨‍🏫 Mentor &amp; <span>Assessment</span></h3>
+    <div class="endpoint-list">
+      <div class="endpoint-item"><span class="method-badge get">GET</span><span class="endpoint-path">/mentors</span><span class="endpoint-desc">List mentors · Query: {skills[], industry, rating, available}</span></div>
+      <div class="endpoint-item"><span class="method-badge get">GET</span><span class="endpoint-path">/mentors/matches</span><span class="endpoint-desc">AI-matched mentors for current user's goals</span></div>
+      <div class="endpoint-item"><span class="method-badge post">POST</span><span class="endpoint-path">/mentors/:id/book</span><span class="endpoint-desc">Book session · Body: {date, time, duration, topic}</span></div>
+      <div class="endpoint-item"><span class="method-badge get">GET</span><span class="endpoint-path">/assessments</span><span class="endpoint-desc">List available assessments by category</span></div>
+      <div class="endpoint-item"><span class="method-badge post">POST</span><span class="endpoint-path">/assessments/:id/start</span><span class="endpoint-desc">Start assessment session · Returns questions + sessionId</span></div>
+      <div class="endpoint-item"><span class="method-badge post">POST</span><span class="endpoint-path">/assessments/:id/submit</span><span class="endpoint-desc">Submit answers · Returns results + score impact</span></div>
+      <div class="endpoint-item"><span class="method-badge get">GET</span><span class="endpoint-path">/analytics/overview</span><span class="endpoint-desc">Get full career analytics: score history, applications, profile views</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ── USER FLOWS ── -->
+<div class="section" id="flows">
+  <div class="section-header">
+    <div class="section-tag">User Flows</div>
+    <h2 class="section-title">Complete <span>User Journeys</span></h2>
+    <p class="section-desc">Every user journey mapped end-to-end. Use these flows to wire navigation logic and state management.</p>
+  </div>
+
+  <div class="spec-section" style="margin-bottom:32px;">
+    <h3>📱 Navigation <span>Structure</span></h3>
+    <table class="spec-table">
+      <tr><th>STACK</th><th>SCREENS</th><th>AUTH REQUIRED</th></tr>
+      <tr><td>Auth Stack</td><td>Splash → Login → Register → OTP Verify → Forgot Password</td><td>No</td></tr>
+      <tr><td>Onboarding Stack</td><td>Goal → Role → Industry → Experience → Skills → Complete</td><td>Yes (new user)</td></tr>
+      <tr><td>Main Tab Stack</td><td>Dashboard | Jobs | Roadmap | Profile</td><td>Yes</td></tr>
+      <tr><td>Skill Stack</td><td>Skill Analysis → Skill Detail → Course Link</td><td>Yes</td></tr>
+      <tr><td>Resume Stack</td><td>Resume Builder → Template Select → Preview → Export</td><td>Yes</td></tr>
+      <tr><td>Mentor Stack</td><td>Mentor List → Mentor Profile → Book → Confirmation</td><td>Yes</td></tr>
+      <tr><td>Assessment Stack</td><td>Assessment List → Quiz → Results → Score Impact</td><td>Yes</td></tr>
+      <tr><td>Analytics Stack</td><td>Analytics Dashboard → Report Detail</td><td>Yes</td></tr>
+      <tr><td>Settings Stack</td><td>Settings → Notifications → Account → Sessions → Delete</td><td>Yes</td></tr>
+      <tr><td>AI Chat Stack</td><td>AI Career Advisor (Modal overlay)</td><td>Yes</td></tr>
+    </table>
+  </div>
+
+  <div class="spec-section">
+    <h3>🔄 State <span>Management Schema</span></h3>
+    <table class="spec-table">
+      <tr><th>STORE</th><th>DATA</th><th>PERSIST</th></tr>
+      <tr><td>auth.store</td><td>accessToken (memory), user object, isAuthenticated, role</td><td>Partial (no token)</td></tr>
+      <tr><td>user.store</td><td>profile, careerScore, onboardingStep, preferences</td><td>Yes (AsyncStorage)</td></tr>
+      <tr><td>jobs.store</td><td>jobFeed, filters, appliedJobs, savedJobs, matchScores</td><td>Cache 30min</td></tr>
+      <tr><td>resume.store</td><td>resumeData, atsScore, suggestions, exportHistory</td><td>Yes</td></tr>
+      <tr><td>roadmap.store</td><td>roadmapNodes, progress, targetRole, timeline</td><td>Yes</td></tr>
+      <tr><td>assessment.store</td><td>activeSession, answers, results history</td><td>Session only</td></tr>
+      <tr><td>mentor.store</td><td>mentorList, bookedSessions, matchedMentors</td><td>Cache 1hr</td></tr>
+      <tr><td>ui.store</td><td>theme, toasts, modals, loading states</td><td>Theme only</td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- ── FOOTER ── -->
+<footer class="doc-footer">
+  <div>
+    <div class="footer-logo">CareerAI</div>
+    <div style="font-size:11px;color:var(--muted);margin-top:8px;">App Design Script v1.0 · Complete Specification</div>
+    <div style="font-size:10px;color:var(--border);margin-top:4px;">Based on: 23UK1A0568 RT Project Document</div>
+  </div>
+  <div class="footer-meta">
+    <div style="color:var(--teal);font-family:'Syne',sans-serif;font-weight:700;font-size:16px;">14 Screens · 38 APIs · 6 AI Modules</div>
+    <div style="margin-top:4px;">React Native + Next.js · Node.js + Django · PostgreSQL + MongoDB</div>
+    <div style="margin-top:4px;">BERT · Random Forest · KNN · K-Means · XGBoost</div>
+  </div>
+</footer>
+
+</body>
+</html>
